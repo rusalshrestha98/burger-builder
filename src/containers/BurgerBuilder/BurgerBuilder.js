@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Aux from '../../hoc/Auxiliary'
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 
@@ -15,21 +14,21 @@ const INGREDIENT_PRICES = {
 class BurgerBuilder extends Component {
     state = {
         ingredients: { // number of ingredients used
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0
+            salad: 1,
+            bacon: 1,
+            cheese: 1,
+            meat: 1
         },
         totalPrice: 4 // base price of the burger
     }
 
-    // when the user adds an ingredient
+    // when the user adds an ingredient in the build control
     addIngredientHandler = (type) => {
         // get the current ingredient count from the 'type' arg that is passed in
         const oldCount = this.state.ingredients[type];
         // update the count 
         const updatedCount = oldCount + 1;
-        // create a new object with the spread operator with the updated count
+        // create a new object with the spread operator with the old state
         const updatedIngredients = {
             ...this.state.ingredients
         };
@@ -46,18 +45,46 @@ class BurgerBuilder extends Component {
         });
     };
 
+    // when the user removes an ingredient in the build control
     removeIngredientHandler = (type) => {
-
+        const oldCount = this.state.ingredients[type];
+        // so that the ingredient count cannot fall below zero
+        if (oldCount <= 0) {
+            return;
+        }
+        const updatedCount = oldCount - 1;
+        const updatedIngredients = {
+            ...this.state.ingredients
+        };
+        updatedIngredients[type] = updatedCount;
+        const priceDeduction = INGREDIENT_PRICES[type];
+        const oldPrice = this.state.totalPrice;
+        const newPrice = oldPrice - priceDeduction;
+        this.setState({
+            totalPrice: newPrice,
+            ingredients: updatedIngredients
+        })
     };
 
     render() {
+        // copy the ingredient state object into new object
+        const disabledInfo = {
+            ...this.state.ingredients
+        }
+        // set each ingredient property to true if it is less/equal to zero
+        // { salad: true, meat: false, ...}
+        for (let key in disabledInfo) {
+            disabledInfo[key] = disabledInfo <= 0
+        }
         return (
-            <Aux>
+            <React.Fragment>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls 
                     ingredientAdded={this.addIngredientHandler} 
+                    ingredientRemoved={this.removeIngredientHandler}
+                    disabled={disabledInfo}
                 />
-            </Aux>
+            </React.Fragment>
         )
     };
 };
