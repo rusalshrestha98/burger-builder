@@ -28,7 +28,7 @@ class BurgerBuilder extends Component {
         const oldCount = this.state.ingredients[type];
         // update the count 
         const updatedCount = oldCount + 1;
-        // create a new object with the spread operator with the old state
+        // create a new object with the spread operator from the old state
         const updatedIngredients = {
             ...this.state.ingredients
         };
@@ -47,23 +47,29 @@ class BurgerBuilder extends Component {
 
     // when the user removes an ingredient in the build control
     removeIngredientHandler = (type) => {
+        // get the current ingredient count from the 'type' arg that is passed in
         const oldCount = this.state.ingredients[type];
         // so that the ingredient count cannot fall below zero
         if (oldCount <= 0) {
             return;
         }
+        // update the count 
         const updatedCount = oldCount - 1;
+        // create a new object with the spread operator from the old state
         const updatedIngredients = {
             ...this.state.ingredients
         };
+        // save the updated count of the ingredient in the new object
         updatedIngredients[type] = updatedCount;
+        // update the total price with the ingredient prices added
         const priceDeduction = INGREDIENT_PRICES[type];
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice - priceDeduction;
+        // update the state
         this.setState({
             totalPrice: newPrice,
             ingredients: updatedIngredients
-        })
+        });
     };
 
     render() {
