@@ -14,13 +14,26 @@ const INGREDIENT_PRICES = {
 class BurgerBuilder extends Component {
     state = {
         ingredients: { // number of ingredients used
-            salad: 1,
-            bacon: 1,
-            cheese: 1,
-            meat: 1
+            salad: 0,
+            bacon: 0,
+            cheese: 0,
+            meat: 0
         },
-        totalPrice: 4 // base price of the burger
+        totalPrice: 4, // base price of the burger
+        purchasable: false
     }
+    
+    // if total number of ingredients is greater than 0, set the 'purchaesable' state to true
+    updatePurchaseState(ingredients) {
+        const sum = Object.keys(ingredients)
+            .map(igKey => {
+                return ingredients[igKey]
+            })
+            .reduce((sum, el) => {
+                return sum + el;
+            }, 0);
+        this.setState({purchasable: sum > 0});
+    };
 
     // when the user adds an ingredient in the build control
     addIngredientHandler = (type) => {
@@ -43,6 +56,7 @@ class BurgerBuilder extends Component {
             totalPrice: newPrice, 
             ingredients: updatedIngredients
         });
+        this.updatePurchaseState(updatedIngredients);
     };
 
     // when the user removes an ingredient in the build control
@@ -70,17 +84,16 @@ class BurgerBuilder extends Component {
             totalPrice: newPrice,
             ingredients: updatedIngredients
         });
+        this.updatePurchaseState(updatedIngredients);
     };
 
     render() {
-        // copy the ingredient state object into new object
+        // for disabling the "Less" button so there are no negative number of ingredients
         const disabledInfo = {
             ...this.state.ingredients
         }
-        // set each ingredient property to true if it is less/equal to zero
-        // { salad: true, meat: false, ...}
         for (let key in disabledInfo) {
-            disabledInfo[key] = disabledInfo <= 0
+            disabledInfo[key] = disabledInfo[key] <= 0
         }
         return (
             <React.Fragment>
@@ -89,6 +102,7 @@ class BurgerBuilder extends Component {
                     ingredientAdded={this.addIngredientHandler} 
                     ingredientRemoved={this.removeIngredientHandler}
                     disabled={disabledInfo}
+                    purchasable={this.state.purchasable}
                     price={this.state.totalPrice}
                 />
             </React.Fragment>
