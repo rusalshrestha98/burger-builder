@@ -95,9 +95,14 @@ class BurgerBuilder extends Component {
         this.setState({purchasing: true});
     }
 
-    // will be triggered whenever the user clicks on the backdrop (outside the modal)
+    // will be triggered whenever the user wants to exit the order summary modal
     purchaseCancelHandler = () => {
         this.setState({purchasing: false})
+    }
+
+    // will be triggered whenever the user wants to continue with the purhase
+    purchaseContinueHandler = () => {
+        alert('You continue!')
     }
 
     render() {
@@ -111,7 +116,11 @@ class BurgerBuilder extends Component {
         return (
             <React.Fragment>
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}> 
-                    <OrderSummary ingredients={this.state.ingredients}/>
+                    <OrderSummary 
+                        ingredients={this.state.ingredients} 
+                        purchaseCancelled={this.purchaseCancelHandler}
+                        purchaseContinued={this.purchaseContinueHandler}
+                    />
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls 
