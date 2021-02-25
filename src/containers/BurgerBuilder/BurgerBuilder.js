@@ -95,6 +95,11 @@ class BurgerBuilder extends Component {
         this.setState({purchasing: true});
     }
 
+    // will be triggered whenever the user clicks on the backdrop (outside the modal)
+    purchaseCancelHandler = () => {
+        this.setState({purchasing: false})
+    }
+
     render() {
         // for disabling the "Less" button so there are no negative number of ingredients
         const disabledInfo = {
@@ -105,7 +110,7 @@ class BurgerBuilder extends Component {
         }
         return (
             <React.Fragment>
-                <Modal show={this.state.purchasing}> 
+                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}> 
                     <OrderSummary ingredients={this.state.ingredients}/>
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
