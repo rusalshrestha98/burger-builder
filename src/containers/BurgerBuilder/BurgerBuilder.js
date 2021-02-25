@@ -22,7 +22,8 @@ class BurgerBuilder extends Component {
             meat: 0
         },
         totalPrice: 4, // base price of the burger
-        purchasable: false
+        purchasable: false, 
+        purchasing: false
     }
     
     // if total number of ingredients is greater than 0, set the 'purchaesable' state to true
@@ -89,6 +90,11 @@ class BurgerBuilder extends Component {
         this.updatePurchaseState(updatedIngredients);
     };
 
+    // will be triggered whenever the user clicks the order button
+    purchaseHandler = () => {
+        this.setState({purchasing: true});
+    }
+
     render() {
         // for disabling the "Less" button so there are no negative number of ingredients
         const disabledInfo = {
@@ -99,7 +105,7 @@ class BurgerBuilder extends Component {
         }
         return (
             <React.Fragment>
-                <Modal>
+                <Modal show={this.state.purchasing}> 
                     <OrderSummary ingredients={this.state.ingredients}/>
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
@@ -109,6 +115,7 @@ class BurgerBuilder extends Component {
                     disabled={disabledInfo}
                     purchasable={this.state.purchasable}
                     price={this.state.totalPrice}
+                    ordered={this.purchaseHandler}
                 />
             </React.Fragment>
         )
